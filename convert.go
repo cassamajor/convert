@@ -34,12 +34,6 @@ func (p *Printer) String(w io.Writer) string {
 	return b.String()
 }
 
-func (p *Printer) Stringln(w io.Writer) string {
-	b := new(strings.Builder)
-	p.Print(b, w)
-	return b.String()
-}
-
 // String will write the content of an io.Writer to a string builder without a trailing newline.
 func String(w io.Writer) string {
 	p := NewPrinter()
