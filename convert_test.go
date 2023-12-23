@@ -12,20 +12,19 @@ func TestConvert(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name     string
-		function func(io.Writer) string
-		printer  convert.Printer
-		want     string
+		name      string
+		printFunc func(w io.Writer, a ...any) (n int, err error)
+		want      string
 	}{
 		{
-			name:    "Content will not include a trailing newline.",
-			printer: convert.Printer{Print: fmt.Fprint},
-			want:    "Hello, world",
+			name:      "Content will not include a trailing newline.",
+			printFunc: fmt.Fprint,
+			want:      "Hello, world",
 		},
 		{
-			name:    "Content will include a trailing newline",
-			printer: convert.Printer{Print: fmt.Fprintln},
-			want:    "Hello, world\n\n",
+			name:      "Content will include a trailing newline",
+			printFunc: fmt.Fprintln,
+			want:      "Hello, world\n\n",
 		},
 	}
 	for _, tt := range tests {
@@ -33,12 +32,11 @@ func TestConvert(t *testing.T) {
 			t.Parallel()
 
 			writer := new(bytes.Buffer)
-			printer := convert.WithPrinter(tt.printer.Print)
+			printer := convert.WithPrinter(tt.printFunc)
 			p := convert.NewPrinter(printer)
-			p.Print(writer, "Hello, world") // Populate the writer using the chosen Print method
-			got := p.String(writer)
+			p.Print(writer, "Hello, world") // Populate the writer using the specified print function
 
-			if got != tt.want {
+			if got := p.String(writer); got != tt.want {
 				t.Errorf("got = %v, want %v", got, tt.want)
 			}
 		})
