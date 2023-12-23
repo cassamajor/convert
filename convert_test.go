@@ -18,16 +18,14 @@ func TestConvert(t *testing.T) {
 		want     string
 	}{
 		{
-			name:     "Content will not include a trailing newline.",
-			function: convert.String,
-			printer:  convert.Printer{Print: fmt.Fprint},
-			want:     "Hello, world",
+			name:    "Content will not include a trailing newline.",
+			printer: convert.Printer{Print: fmt.Fprint},
+			want:    "Hello, world",
 		},
 		{
-			name:     "Content will include a trailing newline",
-			function: convert.Stringln,
-			printer:  convert.Printer{Print: fmt.Fprintln},
-			want:     "Hello, world\n\n",
+			name:    "Content will include a trailing newline",
+			printer: convert.Printer{Print: fmt.Fprintln},
+			want:    "Hello, world\n\n",
 		},
 	}
 	for _, tt := range tests {
@@ -37,8 +35,8 @@ func TestConvert(t *testing.T) {
 			writer := new(bytes.Buffer)
 			printer := convert.WithPrinter(tt.printer.Print)
 			p := convert.NewPrinter(printer)
-			p.Print(writer, "Hello, world")
-			got := tt.function(writer)
+			p.Print(writer, "Hello, world") // Populate the writer using the chosen Print method
+			got := p.String(writer)
 
 			if got != tt.want {
 				t.Errorf("got = %v, want %v", got, tt.want)
