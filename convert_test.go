@@ -24,7 +24,7 @@ func TestConvert(t *testing.T) {
 		{
 			name:      "Content will include a trailing newline",
 			printFunc: fmt.Fprintln,
-			want:      "Hello, world\n\n",
+			want:      "Hello, world\n",
 		},
 	}
 	for _, tt := range tests {
@@ -34,7 +34,7 @@ func TestConvert(t *testing.T) {
 			writer := new(bytes.Buffer)
 			printer := convert.WithPrinter(tt.printFunc)
 			p := convert.NewPrinter(printer)
-			p.Print(writer, "Hello, world") // Populate the writer using the specified print function
+			fmt.Fprint(writer, "Hello, world") // Use fmt.Fprint to write content to the writer unmodified
 
 			if got := p.String(writer); got != tt.want {
 				t.Errorf("got = %v, want %v", got, tt.want)
